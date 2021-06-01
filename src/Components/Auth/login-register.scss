@@ -1,0 +1,63 @@
+html {
+	background-color: #1e1e1c;
+
+	body {
+		.app {
+			height: 100vh;
+			background-color: #1e1e1c;
+			padding: 1rem;
+
+			.segment {
+				background-color: #2A2A28 !important;
+
+				input {
+					background-color: #1e1e1c !important;
+					color: #2a9d8f !important;
+
+					&::placeholder {
+						color: #2a9d8f !important;
+					}
+
+					&:focus {
+						border-color: #2a9d8f !important;
+					}
+				}
+			}
+
+			.show-validation input {
+				&:focus {
+					border-color: #ff7096 !important;
+					background-color: #3c2323 !important;
+				}
+			}
+
+			.message {
+				background-color: #2A2A28;
+				color: white;
+			}
+		}
+
+		.login-form {
+			.segment {
+				input {
+					color: #2a9d8f !important;
+
+					&::placeholder {
+						color: #2a9d8f !important;
+					}
+					&:focus {
+						border-color: #2a9d8f !important;
+					}
+				}
+			}
+		}
+	}
+}
+
+.link-to-register {
+	color: #2a9d8f;
+
+	&:hover {
+		color: #2a9d8f;
+	}
+}
