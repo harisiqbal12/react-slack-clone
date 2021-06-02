@@ -3,13 +3,13 @@ import firebase from '../../Firebase/firebase';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
-import { Grid, Header, Icon, Dropdown } from 'semantic-ui-react';
+import { Grid, Header, Icon, Dropdown, Image } from 'semantic-ui-react';
 import CustomizedSnackbars from './Snackbar';
-import { selectLoader } from '../../redux/user/selector';
+import { selectAuthenticatedUser, selectLoader } from '../../redux/user/selector';
 import {
 	setLoaderTrue,
-	setLoaderFalse,
 	clearUser,
+	setLoaderFalse,
 } from '../../redux/user/action';
 class UserPanel extends React.Component {
 	constructor(props) {
@@ -18,12 +18,12 @@ class UserPanel extends React.Component {
 		this.state = { open: false, message: [''], snackBarSeverit: '' };
 	}
 
-	dropdownOptions = () => [
+	dropdownOptions = user => [
 		{
-			key: 'user',
+			key: user,
 			text: (
 				<span>
-					Signed in as <strong>User</strong>
+					Signed in as <strong>{user}</strong>
 				</span>
 			),
 			disabled: true,
@@ -40,20 +40,18 @@ class UserPanel extends React.Component {
 
 	handleSignout = async () => {
 		try {
+			this.props.setLoadingTrue();
 			await firebase.auth().signOut();
+			this.props.setClearUser();
+
 			this.setState({
 				open: true,
 				message: ['Signout Successfully'],
 				snackBarSeverit: 'success',
 			});
-
-			this.props.clearUser();
+			this.props.setLoadingFalse();
 		} catch (err) {
-			this.setState({
-				open: true,
-				message: [err.messages],
-				snackBarSeverit: 'error',
-			});
+			console.log('Handle signout');
 			console.log(err);
 		}
 	};
@@ -69,6 +67,8 @@ class UserPanel extends React.Component {
 	};
 
 	render() {
+		const { displayName, photoURL } = this.props.selectAuthenticatedUser;
+
 		return (
 			<Grid style={{ background: '#4c3c4c' }}>
 				<Grid.Column>
@@ -77,14 +77,20 @@ class UserPanel extends React.Component {
 							<Icon name='code' />
 							<Header.Content>Dev Chat</Header.Content>
 						</Header>
+
+						<Header style={{ padding: '0.25rem' }} as='h4' inverted>
+							<Dropdown
+								trigger={
+									<span>
+										<Image src={photoURL} spaced='right' avatar />
+										{displayName}
+									</span>
+								}
+								options={this.dropdownOptions(displayName)}
+							/>
+						</Header>
 					</Grid.Row>
 
-					<Header style={{ padding: '0.25rem' }} as='h4' inverted>
-						<Dropdown
-							trigger={<span>user</span>}
-							options={this.dropdownOptions()}
-						/>
-					</Header>
 					<CustomizedSnackbars
 						open={this.state.open}
 						message={this.state.message[0]}
@@ -99,12 +105,13 @@ class UserPanel extends React.Component {
 
 const mapStateToProps = createStructuredSelector({
 	isLoading: selectLoader,
+	selectAuthenticatedUser: selectAuthenticatedUser,
 });
 
 const mapDispatchToprops = dispatch => ({
-	setLoadingToTrue: dispatch(setLoaderTrue()),
-	setLoadingToFasle: dispatch(setLoaderFalse()),
-	clearUser: dispatch(clearUser()),
+	setLoadingTrue: () => dispatch(setLoaderTrue()),
+	setLoadingFalse: () => dispatch(setLoaderFalse()),
+	setClearUser: () => dispatch(clearUser()),
 });
 
 export default connect(mapStateToProps, mapDispatchToprops)(UserPanel);

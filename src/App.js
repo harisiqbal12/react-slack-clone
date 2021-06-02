@@ -11,7 +11,6 @@ import { selectAuthenticatedUser, selectLoader } from './redux/user/selector';
 import {
 	getAuthenticatedUserFromDatabase,
 	setLoaderFalse,
-	clearUser,
 } from './redux/user/action';
 import Spinner from './Components/FrontendUtils/Spinner';
 
@@ -21,22 +20,23 @@ class App extends React.Component {
 	componentDidMount() {
 		const { setAuthenticatedUser, setLoadingToFalse } = this.props;
 
+
 		firebase.auth().onAuthStateChanged(user => {
 			if (!user) {
 				this.props.history.push('/login');
+
 				setLoadingToFalse();
+
 				return;
 			}
-
-			console.log('true there is user');
-			setTimeout(() => {
-				this.props.history.push('/');
-				setAuthenticatedUser();
-				setLoadingToFalse();
-			}, 1200);
+			this.props.history.push('/')
+			setAuthenticatedUser(user);
+			setLoadingToFalse();
 		});
 	}
 	render() {
+		console.log('isLoading: ' + this.props.isLoading);
+
 		return this.props.isLoading ? (
 			<Spinner />
 		) : (
@@ -52,14 +52,12 @@ class App extends React.Component {
 const mapDispatchToProps = dispatch => ({
 	setAuthenticatedUser: user => dispatch(getAuthenticatedUserFromDatabase(user)),
 	setLoadingToFalse: () => dispatch(setLoaderFalse()),
-	clearUser: () => dispatch(clearUser()),
-});
-
-const mapStateToProps = createStructuredSelector({
-	authenticatedUser: selectAuthenticatedUser,
-	isLoading: selectLoader,
 });
 
 const AppWithAuth = withRouter(App);
+
+const mapStateToProps = createStructuredSelector({
+	isLoading: selectLoader,
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppWithAuth);

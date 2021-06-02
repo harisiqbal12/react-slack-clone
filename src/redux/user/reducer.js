@@ -3,7 +3,7 @@ const INITIA_STATE = {
 	isPasswordConfirmValid: false,
 	isUserEmpty: true,
 	isPasswordLessThanEight: true,
-	authenticatedUser: {},
+	authenticatedUser: null,
 	isLoading: true,
 };
 
@@ -78,7 +78,7 @@ const userReducer = (state = INITIA_STATE, action) => {
 		case 'CLEAR_USER':
 			return {
 				...state,
-				authenticatedUser: (state.authenticatedUser = {}),
+				authenticatedUser: (state.authenticatedUser = null),
 			};
 		default:
 			return state;

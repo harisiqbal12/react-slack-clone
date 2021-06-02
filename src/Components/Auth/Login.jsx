@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 import CustomizedSnackbars from '../FrontendUtils/Snackbar';
 import {
 	getAuthenticatedUserFromDatabase,
+	setLoaderFalse,
 	setLoaderTrue,
 } from '../../redux/user/action';
 import './login-register.scss';
@@ -46,14 +47,12 @@ class Login extends React.Component {
 
 		const { email, password } = this.state;
 
-		const { authenticatedUser, setLoadingToTrue } = this.props;
+		const { authenticatedUser } = this.props;
 		try {
 			//saving user to database
 			const signedInUser = await firebase
 				.auth()
 				.signInWithEmailAndPassword(email, password);
-			console.log(signedInUser);
-
 			this.setState({
 				loading: false,
 				open: true,
@@ -62,9 +61,6 @@ class Login extends React.Component {
 			});
 
 			authenticatedUser(signedInUser);
-			setTimeout(() => {
-				setLoadingToTrue();
-			}, 500);
 			// console.log(user);
 		} catch (err) {
 			console.log(err);
@@ -156,6 +152,7 @@ class Login extends React.Component {
 const mapDispatchToProps = dispatch => ({
 	authenticatedUser: user => dispatch(getAuthenticatedUserFromDatabase(user)),
 	setLoadingToTrue: () => dispatch(setLoaderTrue()),
+	setLoadingToFalse: () => dispatch(setLoaderFalse()),
 });
 
 export default connect(null, mapDispatchToProps)(Login);
