@@ -5,7 +5,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/core/styles';
 
 function Alert(props) {
-	return <MuiAlert elevation={6} variant="filled" {...props} />;
+	return <MuiAlert elevation={6} variant='filled' {...props} />;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -15,12 +15,14 @@ const useStyles = makeStyles(theme => ({
 		'& > * + *': {
 			marginTop: theme.spacing(2),
 		},
+		position: 'relative',
+		top: '10rem',
 	},
 	alert: {
-		backgroundColor: '#ff7096',
+		backgroundColor: '#ff7096 !important',
 	},
 	alertSuccess: {
-		backgroundColor: '#2a9d8f',
+		backgroundColor: '#2a9d8f !important',
 	},
 }));
 
@@ -31,22 +33,21 @@ export default function CustomizedSnackbars(props) {
 		<div className={classes.root}>
 			<Snackbar
 				open={props.open}
-				autoHideDuration={1200}
+				autoHideDuration={1500}
 				onClose={props.handleClose}
 				className={
 					props.snackBarSeverity === 'success'
 						? classes.alertSuccess
 						: classes.alert
-				}
-			>
+				}>
 				<Alert
+					severity={props.snackBarSeverity}
 					className={
 						props.snackBarSeverity === 'success'
 							? classes.alertSuccess
 							: classes.alert
 					}
-					onClose={props.handleClose}
-				>
+					onClose={props.handleClose}>
 					{props.message}
 				</Alert>
 			</Snackbar>
