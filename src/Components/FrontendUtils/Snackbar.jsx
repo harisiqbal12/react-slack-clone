@@ -31,7 +31,7 @@ export default function CustomizedSnackbars(props) {
 		<div className={classes.root}>
 			<Snackbar
 				open={props.open}
-				autoHideDuration={5000}
+				autoHideDuration={1200}
 				onClose={props.handleClose}
 				className={
 					props.snackBarSeverity === 'success'

@@ -13,7 +13,10 @@ import {
 import { Link } from 'react-router-dom';
 
 import CustomizedSnackbars from '../FrontendUtils/Snackbar';
-import {getAuthenticatedUserFromDatabase} from '../../redux/user/action';
+import {
+	getAuthenticatedUserFromDatabase,
+	setLoaderTrue,
+} from '../../redux/user/action';
 import './login-register.scss';
 
 class Login extends React.Component {
@@ -43,7 +46,7 @@ class Login extends React.Component {
 
 		const { email, password } = this.state;
 
-		const { authenticatedUser } = this.props;
+		const { authenticatedUser, setLoadingToTrue } = this.props;
 		try {
 			//saving user to database
 			const signedInUser = await firebase
@@ -59,6 +62,9 @@ class Login extends React.Component {
 			});
 
 			authenticatedUser(signedInUser);
+			setTimeout(() => {
+				setLoadingToTrue();
+			}, 500);
 			// console.log(user);
 		} catch (err) {
 			console.log(err);
@@ -85,26 +91,22 @@ class Login extends React.Component {
 		const { email, password, loading } = this.state;
 
 		return (
-			<Grid
-				textAlign="center"
-				verticalAlign="middle"
-				className="app login-form"
-			>
+			<Grid textAlign='center' verticalAlign='middle' className='app login-form'>
 				<Grid.Column style={{ maxWidth: 450 }}>
-					<Header as="h1" icon style={{ color: '#2a9d8f' }} textAlign="center">
-						<Icon name="code branch" />
+					<Header as='h1' icon style={{ color: '#2a9d8f' }} textAlign='center'>
+						<Icon name='code branch' />
 						Login To DevChat
 					</Header>
-					<Form onSubmit={this.handleSubmit} size="large">
-						<Segment stacked className="segment">
+					<Form onSubmit={this.handleSubmit} size='large'>
+						<Segment stacked className='segment'>
 							<Form.Input
 								fluid
 								required
-								name="email"
-								icon="mail"
-								iconPosition="left"
-								placeholder="email address"
-								type="email"
+								name='email'
+								icon='mail'
+								iconPosition='left'
+								placeholder='email address'
+								type='email'
 								onChange={this.handleChange}
 								value={email}
 								style={{ color: '#2a9d8f' }}
@@ -112,11 +114,11 @@ class Login extends React.Component {
 							<Form.Input
 								fluid
 								required
-								name="password"
-								icon="lock"
-								iconPosition="left"
-								placeholder="Password"
-								type="password"
+								name='password'
+								icon='lock'
+								iconPosition='left'
+								placeholder='Password'
+								type='password'
 								onChange={this.handleChange}
 								value={password}
 								style={{ color: '#2a9d8f' }}
@@ -124,18 +126,17 @@ class Login extends React.Component {
 
 							<Button
 								className={loading && 'loading'}
-								type="submit"
+								type='submit'
 								style={{ backgroundColor: '#2a9d8f', color: 'white' }}
 								fluid
-								disabled={loading}
-							>
+								disabled={loading}>
 								Submit
 							</Button>
 						</Segment>
 					</Form>
 					<Message>
 						Create A Account?{' '}
-						<Link className="link-to-register" to="/register">
+						<Link className='link-to-register' to='/register'>
 							Register
 						</Link>
 					</Message>
@@ -154,6 +155,7 @@ class Login extends React.Component {
 
 const mapDispatchToProps = dispatch => ({
 	authenticatedUser: user => dispatch(getAuthenticatedUserFromDatabase(user)),
+	setLoadingToTrue: () => dispatch(setLoaderTrue()),
 });
 
 export default connect(null, mapDispatchToProps)(Login);

@@ -69,6 +69,17 @@ const userReducer = (state = INITIA_STATE, action) => {
 				isLoading: false,
 			};
 
+		case 'SET_GLOBAL_LOADER_TRUE':
+			return {
+				...state,
+				isLoading: true,
+			};
+
+		case 'CLEAR_USER':
+			return {
+				...state,
+				authenticatedUser: (state.authenticatedUser = {}),
+			};
 		default:
 			return state;
 	}

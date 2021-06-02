@@ -20,6 +20,14 @@ export const getAuthenticatedUserFromDatabase = user => ({
 	payload: user,
 });
 
-export const setLoader = () => ({
+export const setLoaderFalse = () => ({
 	type: 'SET_GLOBAL_LOADER_FALSE',
 });
+
+export const setLoaderTrue = () => ({
+	type: 'SET_GLOBAL_LOADER_TRUE'
+})
+
+export const clearUser = () => ({
+	type: 'CLEAR_USER'
+})
