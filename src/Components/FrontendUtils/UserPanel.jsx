@@ -2,8 +2,8 @@ import React from 'react';
 import firebase from '../../Firebase/firebase';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-
 import { Grid, Header, Icon, Dropdown, Image } from 'semantic-ui-react';
+
 import CustomizedSnackbars from './Snackbar';
 import { selectAuthenticatedUser, selectLoader } from '../../redux/user/selector';
 import {
@@ -11,6 +11,10 @@ import {
 	clearUser,
 	setLoaderFalse,
 } from '../../redux/user/action';
+
+import './frontEndUtils.scss';
+
+
 class UserPanel extends React.Component {
 	constructor(props) {
 		super(props);
@@ -70,7 +74,7 @@ class UserPanel extends React.Component {
 	};
 
 	render() {
-		let selectAuthenticatedUser = ''
+		let selectAuthenticatedUser = '';
 		this.props.selectAuthenticatedUser.user
 			? (selectAuthenticatedUser = this.props.selectAuthenticatedUser.user)
 			: (selectAuthenticatedUser = this.props.selectAuthenticatedUser);

@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import Homepage from './Components/Homepage/Homepage';
 import Register from './Components/Auth/Register';
 import Login from './Components/Auth/Login';
-import { selectAuthenticatedUser, selectLoader } from './redux/user/selector';
+import { selectLoader } from './redux/user/selector';
 import {
 	getAuthenticatedUserFromDatabase,
 	setLoaderFalse,

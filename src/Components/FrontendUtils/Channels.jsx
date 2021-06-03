@@ -1,13 +1,14 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Menu, Icon, Modal, Form, Input, Button } from 'semantic-ui-react';
 import { createStructuredSelector } from 'reselect';
 
 import CustomizedSnackbars from './Snackbar';
 import firebase from '../../Firebase/firebase';
 import { selectAuthenticatedUser } from '../../redux/user/selector';
+import { setCurrentChannel } from '../../redux/channels/action';
 
 import './frontEndUtils.scss';
-import { connect } from 'react-redux';
 
 class Channels extends React.Component {
 	state = {
@@ -20,6 +21,38 @@ class Channels extends React.Component {
 		snackBarSeverity: '',
 		channelsRef: firebase.database().ref('channels'),
 		loading: false,
+		firstLoad: true,
+		activeChannel: '',
+	};
+
+	componentDidMount() {
+		this.addListeners();
+	}
+
+	componentWillUnmount() {
+		this.removeListeners();
+	}
+
+	removeListeners = () => {
+		this.state.channelsRef.off();
+	}
+
+	addListeners = () => {
+		let loadedChannels = [];
+		this.state.channelsRef.on('child_added', snap => {
+			loadedChannels.push(snap.val());
+			this.setState({ channels: loadedChannels }, () => this.setFirstChannel());
+		});
+	};
+
+	setFirstChannel = () => {
+		const firstChannel = this.state.channels[0];
+		if (this.state.firstLoad && this.state.channels.length > 0) {
+			this.props.setCurrentChannel(firstChannel);
+			this.setState({activeChannel: firstChannel.id})
+		}
+
+		this.setState({ firstLoad: false });
 	};
 
 	closeModal = () => this.setState({ modal: false });
@@ -109,16 +142,44 @@ class Channels extends React.Component {
 		});
 	};
 
+	changeChannel = channel => {
+		this.setActiveChannel(channel);
+		this.props.setCurrentChannel(channel);
+	};
+
+	setActiveChannel = channel => {
+		this.setState({ activeChannel: channel.id });
+	};
+
+	displayChannels = channels => {
+		return (
+			channels.length > 0 &&
+			channels.map(channel => (
+				<Menu.Item
+					className='channels'
+					key={channel.id}
+					onClick={() => this.changeChannel(channel)}
+					name={channel.name}
+					style={{ opacity: 0.7 }}
+					active={channel.id === this.state.activeChannel}>
+					# {channel.name}
+				</Menu.Item>
+			))
+		);
+	};
+
 	render() {
 		const { channels, modal, snackBarOpen, message, snackBarSeverity, loading } =
 			this.state;
 
+		console.log(channels);
+
 		return (
 			<React.Fragment>
-				<Menu.Menu style={{ paddingBottom: '2em' }}>
-					<Menu.Item>
+				<Menu.Menu className='userpanel' style={{ paddingBottom: '2em' }}>
+					<Menu.Item className='userpanel-menu'>
 						<span>
-							<Icon name='exchange' /> Channels{' '}
+							<Icon style={{ color: 'white' }} name='exchange' /> Channels{' '}
 						</span>
 						({channels.length}){' '}
 						<Icon
@@ -127,7 +188,8 @@ class Channels extends React.Component {
 							onClick={this.openModal}
 						/>
 					</Menu.Item>
-					{/* All Channels */}
+
+					{this.displayChannels(channels)}
 				</Menu.Menu>
 				{/* // Add Channel Modal */}
 				<Modal basic open={modal} onClose={this.closeModal}>
@@ -178,8 +240,12 @@ class Channels extends React.Component {
 	}
 }
 
+const mapDispatchToprops = dispatch => ({
+	setCurrentChannel: channel => dispatch(setCurrentChannel(channel)),
+});
+
 const mapStateToProps = createStructuredSelector({
 	selectAuthenticatedUser: selectAuthenticatedUser,
 });
 
-export default connect(mapStateToProps)(Channels);
+export default connect(mapStateToProps, mapDispatchToprops)(Channels);
