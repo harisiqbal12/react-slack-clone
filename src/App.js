@@ -29,8 +29,9 @@ class App extends React.Component {
 
 				return;
 			}
-			this.props.history.push('/')
 			setAuthenticatedUser(user);
+
+			this.props.history.push('/')
 			setLoadingToFalse();
 		});
 	}

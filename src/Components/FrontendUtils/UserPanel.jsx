@@ -15,7 +15,11 @@ class UserPanel extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = { open: false, message: [''], snackBarSeverit: '' };
+		this.state = {
+			open: false,
+			message: [''],
+			snackBarSeverit: '',
+		};
 	}
 
 	dropdownOptions = user => [
@@ -43,16 +47,15 @@ class UserPanel extends React.Component {
 			this.props.setLoadingTrue();
 			await firebase.auth().signOut();
 			this.props.setClearUser();
-
-			this.setState({
-				open: true,
-				message: ['Signout Successfully'],
-				snackBarSeverit: 'success',
-			});
 			this.props.setLoadingFalse();
 		} catch (err) {
 			console.log('Handle signout');
 			console.log(err);
+			this.setState({
+				open: true,
+				message: [err.message],
+				snackBarSeverit: 'error',
+			});
 		}
 	};
 
@@ -67,7 +70,14 @@ class UserPanel extends React.Component {
 	};
 
 	render() {
-		const { displayName, photoURL } = this.props.selectAuthenticatedUser;
+		let selectAuthenticatedUser = ''
+		this.props.selectAuthenticatedUser.user
+			? (selectAuthenticatedUser = this.props.selectAuthenticatedUser.user)
+			: (selectAuthenticatedUser = this.props.selectAuthenticatedUser);
+		console.log(selectAuthenticatedUser);
+
+		const { displayName, photoURL } = selectAuthenticatedUser;
+		console.log(this.props.displayName);
 
 		return (
 			<Grid style={{ background: '#4c3c4c' }}>

@@ -80,11 +80,8 @@ class Register extends React.Component {
 
 	handleSubmit = async e => {
 		e.preventDefault();
-		const {
-			isPasswordConfirmValid,
-			isPasswordLessThanEight,
-			authenticatedUser,
-		} = this.props;
+		const { isPasswordConfirmValid, isPasswordLessThanEight, authenticatedUser } =
+			this.props;
 
 		if (!isPasswordConfirmValid || isPasswordLessThanEight)
 			return alert('Error Occured');
@@ -94,6 +91,7 @@ class Register extends React.Component {
 		this.setState({ loading: true });
 
 		try {
+			
 			const user = await firebase
 				.auth()
 				.createUserWithEmailAndPassword(email, password);
@@ -107,6 +105,7 @@ class Register extends React.Component {
 
 			//saving user to database
 			await this.saveUser(user);
+			console.log('user saved to database');
 
 			this.setState({
 				loading: false,
@@ -129,7 +128,7 @@ class Register extends React.Component {
 
 	saveUser = createdUser =>
 		this.state.userRef.child(createdUser.user.uid).set({
-			name: createdUser.user.uid,
+			name: createdUser.user.displayName,
 			avatar: createdUser.user.photoURL,
 		});
 
@@ -149,22 +148,22 @@ class Register extends React.Component {
 		const { username, email, password, passwordConfirm, loading } = this.state;
 
 		return (
-			<Grid textAlign="center" verticalAlign="middle" className="app">
+			<Grid textAlign='center' verticalAlign='middle' className='app'>
 				<Grid.Column style={{ maxWidth: 450 }}>
-					<Header as="h1" icon style={{ color: '#2a9d8f' }} textAlign="center">
-						<Icon name="puzzle piece" />
+					<Header as='h1' icon style={{ color: '#2a9d8f' }} textAlign='center'>
+						<Icon name='puzzle piece' />
 						Register For DevChat
 					</Header>
-					<Form onSubmit={this.handleSubmit} size="large">
-						<Segment stacked className="segment">
+					<Form onSubmit={this.handleSubmit} size='large'>
+						<Segment stacked className='segment'>
 							<Form.Input
 								fluid
 								required
-								name="username"
-								icon="user"
-								iconPosition="left"
-								placeholder="Username"
-								type="text"
+								name='username'
+								icon='user'
+								iconPosition='left'
+								placeholder='Username'
+								type='text'
 								onChange={this.handleChange}
 								value={username}
 								style={{ color: '#2a9d8f' }}
@@ -172,11 +171,11 @@ class Register extends React.Component {
 							<Form.Input
 								fluid
 								required
-								name="email"
-								icon="mail"
-								iconPosition="left"
-								placeholder="email address"
-								type="email"
+								name='email'
+								icon='mail'
+								iconPosition='left'
+								placeholder='email address'
+								type='email'
 								onChange={this.handleChange}
 								value={email}
 								style={{ color: '#2a9d8f' }}
@@ -191,11 +190,11 @@ class Register extends React.Component {
 							<Form.Input
 								fluid
 								required
-								name="password"
-								icon="lock"
-								iconPosition="left"
-								placeholder="Password"
-								type="password"
+								name='password'
+								icon='lock'
+								iconPosition='left'
+								placeholder='Password'
+								type='password'
 								onChange={this.handleChange}
 								value={password}
 								style={{ color: '#2a9d8f' }}
@@ -208,11 +207,11 @@ class Register extends React.Component {
 							<Form.Input
 								fluid
 								required
-								name="passwordConfirm"
-								icon="repeat"
-								iconPosition="left"
-								placeholder="Confirm Password"
-								type="password"
+								name='passwordConfirm'
+								icon='repeat'
+								iconPosition='left'
+								placeholder='Confirm Password'
+								type='password'
 								onChange={this.handleChange}
 								value={passwordConfirm}
 								style={{ color: '#2a9d8f' }}
@@ -225,18 +224,17 @@ class Register extends React.Component {
 
 							<Button
 								className={loading && 'loading'}
-								type="submit"
+								type='submit'
 								fluid
 								disabled={loading}
-								style={{ backgroundColor: '#2a9d8f' }}
-							>
+								style={{ backgroundColor: '#2a9d8f' }}>
 								Submit
 							</Button>
 						</Segment>
 					</Form>
 					<Message>
 						Already a user?{' '}
-						<Link className="link-to-register" to="/login">
+						<Link className='link-to-register' to='/login'>
 							Login
 						</Link>
 					</Message>
@@ -279,6 +277,7 @@ const mapDispatchToProps = dispatch => ({
 	validateUserEmpty: () => dispatch(checkUserInputEmpty()),
 	validatePasswordLength: () => dispatch(checkUserValidationPasswordLength()),
 	authenticatedUser: user => dispatch(getAuthenticatedUserFromDatabase(user)),
+
 });
 
 const mapStateToProps = createStructuredSelector({
