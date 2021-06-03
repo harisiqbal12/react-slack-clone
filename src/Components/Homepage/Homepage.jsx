@@ -1,24 +1,42 @@
 import React from 'react';
 import { Grid } from 'semantic-ui-react';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 
 import ColorPanel from '../FrontendUtils/ColorPanel';
 import SidePanel from '../FrontendUtils/SidePanel';
 import Messages from '../FrontendUtils/Messages';
 import MetaPanel from '../FrontendUtils/MetaPanel';
+import { selectAuthenticatedUser } from '../../redux/user/selector';
+import { selectCurrentChannel } from '../../redux/channels/selector';
 
-const Homepage = () => (
-	<Grid columns="equal" className="app" style={{ background: '#1e1e1c', color: '#fff' }}>
-		<ColorPanel />
-		<SidePanel />
+const Homepage = ({ currentChannel, currentUser }) => {
+	let channel = {};
 
-		<Grid.Column style={{ marginLeft: 320 }}>
-			<Messages />
-		</Grid.Column>
+	currentChannel.payload ? channel = currentChannel : channel = {};
 
-		<Grid.Column width={4}>
-			<MetaPanel />
-		</Grid.Column>
-	</Grid>
-);
+	return (
+		<Grid
+			columns='equal'
+			className='app'
+			style={{ background: '#1e1e1c', color: '#fff' }}>
+			<ColorPanel />
+			<SidePanel />
 
-export default Homepage;
+			<Grid.Column style={{ marginLeft: 320 }}>
+				<Messages currentUser={currentUser} currentChannel={channel} />
+			</Grid.Column>
+
+			<Grid.Column width={4}>
+				<MetaPanel />
+			</Grid.Column>
+		</Grid>
+	);
+};
+
+const mapStateToProps = createStructuredSelector({
+	currentUser: selectAuthenticatedUser,
+	currentChannel: selectCurrentChannel,
+});
+
+export default connect(mapStateToProps)(Homepage);

@@ -28,10 +28,19 @@ const useStyles = makeStyles(theme => ({
 
 export default function CustomizedSnackbars(props) {
 	const classes = useStyles();
+	let verticleOrigin = '';
+	let horizonleOrigin = '';
+	props.horizontal
+		? (horizonleOrigin = props.horizonleOrigin)
+		: (horizonleOrigin = 'center');
+	props.verticle
+		? (verticleOrigin = props.verticle)
+		: (verticleOrigin = 'bottom');
 
 	return (
 		<div className={classes.root}>
 			<Snackbar
+				anchorOrigin={{ vertical: verticleOrigin, horizontal: horizonleOrigin }}
 				open={props.open}
 				autoHideDuration={1500}
 				onClose={props.handleClose}
