@@ -19,7 +19,9 @@ const Message = ({ message, user }) => (
 			<Comment.Author style={{ color: '#e07a5f' }} as='a'>
 				@{message.user.name}
 			</Comment.Author>
-			<Comment.Metadata>{timeFromNow(message.timestamp)}</Comment.Metadata>
+			<Comment.Metadata style={{ color: '#2a9d8f' }}>
+				{timeFromNow(message.timestamp)}
+			</Comment.Metadata>
 			<Comment.Text style={{ color: 'white' }}>{message.content}</Comment.Text>
 		</Comment.Content>
 	</Comment>

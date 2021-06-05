@@ -29,10 +29,10 @@ class Messages extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
+		console.log('harisss');
 		if (
 			nextProps.currentChannel.payload.id !== this.props.currentChannel.payload.id
 		) {
-			console.log('trueeeeee');
 			this.setState({ channel: nextProps.currentChannel.payload }, () => {
 				this.addeventListener(this.state.channel.id);
 				console.log(this.state.channel);
@@ -54,30 +54,32 @@ class Messages extends React.Component {
 	};
 
 	addeventListener = channelId => {
-		this.props.setLoadingTrue();
 		console.log('event listenerss');
 		console.log(channelId);
 		this.addMessageListener(channelId);
 	};
 
 	addMessageListener = channelId => {
+		console.log('message listneres');
 		console.log(channelId);
 		let loadedMessages = [];
+
 		this.state.messagesRef.child(channelId).on('child_added', snap => {
 			loadedMessages.push(snap.val());
-			console.log(loadedMessages);
 			this.setState({
 				messages: loadedMessages,
 				messagesLoading: false,
 			});
 		});
 
-		this.props.setLoadingFalse();
+		console.log('loaded Messages');
+		console.log(loadedMessages);
+
+		console.log(this.state.isMessageEmpty);
 	};
 
 	displayMessages = messages => {
-		console.log(messages.length);
-		console.log(messages)
+		console.log();
 		return (
 			messages.length > 0 &&
 			messages.map(message => (
@@ -95,16 +97,24 @@ class Messages extends React.Component {
 		const { messagesRef, messages, channel } = this.state;
 		console.log(this.props.currentChannel);
 
-		return (
+		return messages[0] ? (
 			<React.Fragment>
 				<MessagesHeader channel={channel} />
 
 				<Segment className='messages'>
-					<Comment.Group>{this.displayMessages(messages)}</Comment.Group>
+					{
+						<Comment.Group>
+							{' '}
+							{messages[0].channelId === channel.id &&
+								this.displayMessages(messages)}
+						</Comment.Group>
+					}
 				</Segment>
 
 				<MessagesForm currentChannel={channel} messagesRef={messagesRef} />
 			</React.Fragment>
+		) : (
+			<Spinner title={'Preparing conversation...'} />
 		);
 	}
 }

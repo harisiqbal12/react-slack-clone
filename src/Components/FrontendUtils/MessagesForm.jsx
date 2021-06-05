@@ -38,6 +38,7 @@ class MessagesForm extends React.Component {
 		const message = {
 			timestamp: firebase.database.ServerValue.TIMESTAMP,
 			content: this.state.message,
+			channelId: this.props.currentChannel.id,
 			user: {
 				id: this.state.user.uid,
 				name: this.state.user.displayName,
@@ -106,7 +107,7 @@ class MessagesForm extends React.Component {
 
 				<Button.Group icon widths='2'>
 					<Button
-						color='orange'
+						style={{ backgroundColor: '#e07a5f' }}
 						content='Sent'
 						labelPosition='left'
 						icon='angle double right'
@@ -116,6 +117,7 @@ class MessagesForm extends React.Component {
 					/>
 					<Button
 						color='teal'
+						style={{ backgroundColor: '#2a9d8f' }}
 						content='Uplaod Media'
 						labelPosition='right'
 						icon='cloud upload'

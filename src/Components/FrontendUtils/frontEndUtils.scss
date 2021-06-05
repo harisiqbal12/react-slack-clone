@@ -1,6 +1,6 @@
 .userpanel {
 	.userpanel-menu {
-    color: azure !important;
+		color: azure !important;
 
 		span {
 			color: azure !important;
@@ -15,15 +15,20 @@
 // Messages
 
 .messages {
-	height: 75%;
+	height: 76%;
 	overflow-y: scroll;
-	border-bottom: 2px solid #00B5AD !important;
+	border-bottom: 2px solid #2a9d8f !important;
+	border-left: 2px solid #2a9d8f !important;
+
+	border-radius: 1rem !important;
 }
 
 // MessagesForm
 .message__form {
+	box-shadow: 3px -9px 17px 0px rgba(0, 0, 0, 0.75);
+	-webkit-box-shadow: 3px -9px 17px 0px rgba(0, 0, 0, 0.75);
+	-moz-box-shadow: 3px -9px 17px 0px rgba(0, 0, 0, 0.75);
 	position: fixed !important;
-	bottom: 1em;
 	margin-left: 320px !important;
 	left: 0;
 	right: 1rem;
@@ -32,7 +37,6 @@
 
 // Message.js
 .message__self {
-	border-left:  2px solid #e07a5f !important;
+	border-left: 2px solid #e07a5f !important;
 	padding-left: 8px;
-	
 }

@@ -19,7 +19,7 @@ class SidePanel extends React.Component {
 				size='large'
 				fixed='left'
 				vertical
-				style={{ background: '#4c3c4c', fontSize: '1.2rem' }}>
+				style={{ background: '#e07a5f', fontSize: '1.2rem' }}>
 				<UserPanel />
 				<Channels display />
 			</Menu>

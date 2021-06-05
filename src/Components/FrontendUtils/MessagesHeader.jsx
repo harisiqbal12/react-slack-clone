@@ -5,17 +5,17 @@ class MessageHeader extends React.Component {
 	render() {
 		return (
 			<Segment clearing>
-
-        {/* Channel Title  */}
+				{/* Channel Title  */}
 				<Header fluid='true' as='h2' floated='left' style={{ marginBottm: 0 }}>
-					<span>
+					<span style={{ color: '#e07a5f' }}>
 						{this.props.channel.name}
-						<Icon name={'star outline'} color='black' />
 					</span>
-					<Header.Subheader>2 Users</Header.Subheader>
+					<Header.Subheader style={{ color: '#2a9d8f' }}>
+						2 Users
+					</Header.Subheader>
 				</Header>
 
-        {/* channel search */}
+				{/* channel search */}
 				<Header floated='right'>
 					<Input
 						size='mini'

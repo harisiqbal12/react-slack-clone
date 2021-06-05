@@ -13,9 +13,7 @@ import Spinner from '../FrontendUtils/Spinner';
 import Channels from '../FrontendUtils/Channels';
 
 const Homepage = ({ currentChannel, currentUser }) => {
-	const [displayMessages, setDisplayMessages] = useState(false);
 	console.log('homepage');
-	console.log(displayMessages);
 
 	return (
 		<React.Fragment>
@@ -32,7 +30,7 @@ const Homepage = ({ currentChannel, currentUser }) => {
 					{currentChannel.payload ? (
 						<Messages currentChannel={currentChannel} currentUser={currentUser} />
 					) : (
-						<div></div>
+						<Spinner title='preparing channels' />
 					)}
 				</Grid.Column>
 
