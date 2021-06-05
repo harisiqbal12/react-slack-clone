@@ -13,12 +13,11 @@ class ColorPanel extends React.Component {
 				width='very thin'>
 				<Divider>
 					<Button
-					
 						icon='add'
 						size='small'
 						compact
-						style={{ height: '2.5rem' }}
 						color='blue'
+						style={{ height: '2.5rem', backgroundColor: '#e07a5f' }}
 					/>
 				</Divider>
 			</Sidebar>

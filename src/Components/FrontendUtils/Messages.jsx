@@ -99,7 +99,7 @@ class Messages extends React.Component {
 
 		return messages[0] ? (
 			<React.Fragment>
-				<MessagesHeader channel={channel} />
+				<MessagesHeader messages={messages} channel={channel} />
 
 				<Segment className='messages'>
 					{
