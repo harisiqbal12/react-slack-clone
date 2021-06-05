@@ -6,3 +6,8 @@ export const selectCurrentChannel = createSelector(
 	[selectChannel],
 	channel => channel.currentChannel
 );
+
+export const selectIsDisplayChats = createSelector(
+	[selectChannel],
+	channel => channel.displayChats
+);

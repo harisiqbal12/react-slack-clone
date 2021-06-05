@@ -1,9 +1,9 @@
 import React from 'react';
 import { Loader, Dimmer } from 'semantic-ui-react';
 
-const Spinner = () => (
-	<Dimmer active>
-		<Loader size="huge" content={'Preparing Chat..'} />
+const Spinner = ({ title = 'Preparing Chat...', isInverted = false }) => (
+	<Dimmer active  style={{ backgroundColor: '#2A2A28' }}>
+		<Loader inverted size='huge' content={title} />
 	</Dimmer>
 );
 

@@ -1,5 +1,6 @@
 const INITIAL_STATE = {
 	currentChannel: {},
+	isDisplayChats: false,
 };
 
 const channelReducer = (state = INITIAL_STATE, action) => {
@@ -8,6 +9,12 @@ const channelReducer = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				currentChannel: action,
+			};
+
+		case 'DISPLAY_CHATS':
+			return {
+				...state,
+				displayChats: true,
 			};
 
 		default:

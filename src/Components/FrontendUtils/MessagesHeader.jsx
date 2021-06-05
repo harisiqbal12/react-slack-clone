@@ -9,7 +9,7 @@ class MessageHeader extends React.Component {
         {/* Channel Title  */}
 				<Header fluid='true' as='h2' floated='left' style={{ marginBottm: 0 }}>
 					<span>
-						Channel
+						{this.props.channel.name}
 						<Icon name={'star outline'} color='black' />
 					</span>
 					<Header.Subheader>2 Users</Header.Subheader>

@@ -7,6 +7,7 @@ import CustomizedSnackbars from './Snackbar';
 import firebase from '../../Firebase/firebase';
 import { selectAuthenticatedUser } from '../../redux/user/selector';
 import { setCurrentChannel } from '../../redux/channels/action';
+import { setLoaderFalse, setLoaderTrue } from '../../redux/user/action';
 
 import './frontEndUtils.scss';
 
@@ -35,13 +36,18 @@ class Channels extends React.Component {
 
 	removeListeners = () => {
 		this.state.channelsRef.off();
-	}
+	};
 
-	addListeners = () => {
+	addListeners = async () => {
 		let loadedChannels = [];
 		this.state.channelsRef.on('child_added', snap => {
 			loadedChannels.push(snap.val());
-			this.setState({ channels: loadedChannels }, () => this.setFirstChannel());
+			this.setState({ channels: loadedChannels }, () => {
+				this.setFirstChannel();
+				this.props.setCurrentChannel(this.state.channels[0]);
+				console.log('channel id');
+				console.log(this.state.channels[0].id);
+			});
 		});
 	};
 
@@ -49,7 +55,7 @@ class Channels extends React.Component {
 		const firstChannel = this.state.channels[0];
 		if (this.state.firstLoad && this.state.channels.length > 0) {
 			this.props.setCurrentChannel(firstChannel);
-			this.setState({activeChannel: firstChannel.id})
+			this.setState({ activeChannel: firstChannel.id });
 		}
 
 		this.setState({ firstLoad: false });
@@ -143,8 +149,27 @@ class Channels extends React.Component {
 	};
 
 	changeChannel = channel => {
+		console.log('haris');
+
 		this.setActiveChannel(channel);
+		console.log(channel);
 		this.props.setCurrentChannel(channel);
+		console.log(channel);
+		// console.log('channels channelsssss');
+		// this.addMessageListeners(channel.id);
+	};
+
+	addMessageListeners = channelId => {
+		let loadedMessages = [];
+		console.log('message listeners')
+
+		this.state.messagesRef.child(channelId).on('child_added', snap => {
+			loadedMessages.push(snap.val());
+			console.log(loadedMessages);
+			console.log('completed')
+		});
+
+		console.log('message listners')
 	};
 
 	setActiveChannel = channel => {
@@ -172,9 +197,7 @@ class Channels extends React.Component {
 		const { channels, modal, snackBarOpen, message, snackBarSeverity, loading } =
 			this.state;
 
-		console.log(channels);
-
-		return (
+		return this.props.display ? (
 			<React.Fragment>
 				<Menu.Menu className='userpanel' style={{ paddingBottom: '2em' }}>
 					<Menu.Item className='userpanel-menu'>
@@ -236,12 +259,16 @@ class Channels extends React.Component {
 					snackBarSeverity={snackBarSeverity}
 				/>
 			</React.Fragment>
+		) : (
+			<div></div>
 		);
 	}
 }
 
 const mapDispatchToprops = dispatch => ({
 	setCurrentChannel: channel => dispatch(setCurrentChannel(channel)),
+	setLoaderTrue: () => dispatch(setLoaderTrue()),
+	setLoaderFalse: () => dispatch(setLoaderFalse()),
 });
 
 const mapStateToProps = createStructuredSelector({

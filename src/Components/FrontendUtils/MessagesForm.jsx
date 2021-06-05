@@ -52,11 +52,11 @@ class MessagesForm extends React.Component {
 		const { messagesRef, currentChannel } = this.props;
 
 		this.setState({ loading: true });
+		console.log(currentChannel.id)
 
-		console.log(currentChannel.payload.id);
 		try {
 			await messagesRef
-				.child(currentChannel.payload.id)
+				.child(currentChannel.id)
 				.push()
 				.set(this.createMessage());
 			this.setState({ loading: false, message: '' });
