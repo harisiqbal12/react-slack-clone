@@ -2,13 +2,22 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { Segment, Button, Input } from 'semantic-ui-react';
+import { uuid } from 'uuidv4';
 
 import { selectAuthenticatedUser } from '../../redux/user/selector';
 import CustomizedSnackbars from './Snackbar';
 import firebase from '../../Firebase/firebase';
+import FileModal from './FileModal';
+import {
+	selectShowSnackBar,
+	selectSnackBarPropeties,
+} from '../../redux/channels/selector';
+import { closeSnackBar } from '../../redux/channels/action';
 
 class MessagesForm extends React.Component {
 	state = {
+		uploadState: '',
+		uplaodTask: null,
 		message: '',
 		loading: false,
 		snackBarOpen: false,
@@ -16,7 +25,13 @@ class MessagesForm extends React.Component {
 		errors: [''],
 		channel: '',
 		user: '',
+		modal: false,
+		storageRef: firebase.storage().ref(),
+		percentUploaded: 0,
 	};
+
+	openModal = () => this.setState({ modal: true });
+	closeModal = () => this.setState({ modal: false });
 
 	componentDidMount() {
 		this.setState({
@@ -31,7 +46,7 @@ class MessagesForm extends React.Component {
 		});
 	};
 
-	createMessage = () => {
+	createMessage = (fileUrl = null) => {
 		// console.log('function run');
 		// console.log(this.state.user.displayName);
 		// console.log(this.state.user.photoURL);
@@ -46,6 +61,15 @@ class MessagesForm extends React.Component {
 			},
 		};
 
+		if (fileUrl !== null) {
+			message['image'] = fileUrl;
+		} else {
+			message['content'] = this.state.message;
+		}
+
+		console.log('messagess');
+		console.log(message);
+
 		return message;
 	};
 
@@ -53,13 +77,10 @@ class MessagesForm extends React.Component {
 		const { messagesRef, currentChannel } = this.props;
 
 		this.setState({ loading: true });
-		console.log(currentChannel.id)
+		console.log(currentChannel.id);
 
 		try {
-			await messagesRef
-				.child(currentChannel.id)
-				.push()
-				.set(this.createMessage());
+			await messagesRef.child(currentChannel.id).push().set(this.createMessage());
 			this.setState({ loading: false, message: '' });
 		} catch (error) {
 			console.log(error);
@@ -77,14 +98,89 @@ class MessagesForm extends React.Component {
 			return;
 		}
 
+		this.props.closeSnackBarFunc();
 		this.setState({
 			snackBarOpen: false,
 		});
 	};
 
+	uploadFile = (file, metadata) => {
+		const pathToUpload = this.state.channel.id;
+		const ref = this.props.messagesRef;
+		const filepath = `chat/public/${uuid()}.jpg`;
+
+		this.setState(
+			{
+				uploadState: 'uploading',
+				uplaodTask: this.state.storageRef.child(filepath).put(file, metadata),
+			},
+			() => {
+				this.state.uplaodTask.on(
+					'state_changed',
+					snap => {
+						const percentUploaded =
+							Math.round(snap.bytesTransferred / snap.totalBytes) * 100;
+
+						this.setState({ percentUploaded });
+					},
+					err => {
+						console.log(err);
+						this.setState({
+							errors: [err.message],
+							uploadState: 'error',
+							uplaodTask: null,
+						});
+					},
+					() => {
+						this.state.uplaodTask.snapshot.ref
+							.getDownloadURL()
+							.then(downloadUrl => {
+								console.log();
+								this.sendFileMessage(downloadUrl, ref, pathToUpload);
+							})
+							.catch(err => {
+								console.log(err);
+								this.setState({
+									errors: [err.message],
+									uploadState: 'error',
+									uplaodTask: null,
+								});
+							});
+					}
+				);
+			}
+		);
+	};
+
+	sendFileMessage = (fileUrl, ref, pathToUpload) => {
+		ref
+			.child(pathToUpload)
+			.push()
+			.set(this.createMessage(fileUrl))
+			.then(() => {
+				this.setState({ uploadState: 'done' });
+			})
+			.catch(err => {
+				console.log(err);
+				this.setState({
+					errors: [err.message],
+				});
+			});
+	};
 	render() {
-		const { message, loading, snackBarOpen, snackBarSeverity, errors } =
-			this.state;
+		const {
+			message,
+			loading,
+			snackBarOpen,
+			snackBarSeverity,
+			errors,
+			modal,
+			percentUploaded,
+		} = this.state;
+
+		const { isSnackBar, snackBarPropeties } = this.props;
+
+		console.log('percent upload: ' + percentUploaded);
 		return (
 			<Segment className='message__form'>
 				<CustomizedSnackbars
@@ -117,12 +213,25 @@ class MessagesForm extends React.Component {
 					/>
 					<Button
 						color='teal'
+						onClick={this.openModal}
 						style={{ backgroundColor: '#2a9d8f' }}
 						content='Uplaod Media'
 						labelPosition='right'
 						icon='cloud upload'
 					/>
+					<FileModal
+						uploadFile={this.uploadFile}
+						modal={modal}
+						closeModal={this.closeModal}
+					/>
 				</Button.Group>
+				<CustomizedSnackbars
+					open={isSnackBar}
+					message={snackBarPropeties.message}
+					snackBarSeverity={snackBarPropeties.snackBarSeverity}
+					handleClose={this.handleSnackBarClose}
+					verticle='top'
+				/>
 			</Segment>
 		);
 	}
@@ -130,6 +239,12 @@ class MessagesForm extends React.Component {
 
 const mapStateToProps = createStructuredSelector({
 	currentUser: selectAuthenticatedUser,
+	isSnackBar: selectShowSnackBar,
+	snackBarPropeties: selectSnackBarPropeties,
 });
 
-export default connect(mapStateToProps)(MessagesForm);
+const mapDispatchToProps = dispatch => ({
+	closeSnackBarFunc: () => dispatch(closeSnackBar()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(MessagesForm);

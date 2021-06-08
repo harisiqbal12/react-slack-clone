@@ -11,3 +11,13 @@ export const selectIsDisplayChats = createSelector(
 	[selectChannel],
 	channel => channel.displayChats
 );
+
+export const selectShowSnackBar = createSelector(
+	[selectChannel],
+	channel => channel.showSnackBar
+);
+
+export const selectSnackBarPropeties = createSelector(
+	[selectChannel],
+	channel => channel.snackBarProperties
+);

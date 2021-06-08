@@ -80,8 +80,7 @@ class Messages extends React.Component {
 
 	displayMessages = messages => {
 		console.log();
-		return (
-			messages.length > 0 &&
+		return messages.length > 0 ? (
 			messages.map(message => (
 				<Message
 					key={message.timestamp}
@@ -90,6 +89,8 @@ class Messages extends React.Component {
 					channel={this.state.channel}
 				/>
 			))
+		) : (
+			<div> </div>
 		);
 	};
 
@@ -97,25 +98,47 @@ class Messages extends React.Component {
 		const { messagesRef, messages, channel } = this.state;
 		console.log(this.props.currentChannel);
 
-		return messages[0] ? (
-			<React.Fragment>
-				<MessagesHeader messages={messages} channel={channel} />
+		console.log('messagess:: ');
+		console.log(messages);
 
-				<Segment className='messages'>
-					{
-						<Comment.Group>
-							{' '}
-							{messages[0].channelId === channel.id &&
-								this.displayMessages(messages)}
-						</Comment.Group>
-					}
-				</Segment>
+		if (messages.length > 0) {
+			return messages[0] ? (
+				<React.Fragment>
+					<MessagesHeader messages={messages} channel={channel} />
 
-				<MessagesForm currentChannel={channel} messagesRef={messagesRef} />
-			</React.Fragment>
-		) : (
-			<Spinner title={'Preparing conversation...'} />
-		);
+					<Segment className='messages'>
+						{
+							<Comment.Group>
+								{' '}
+								{messages[0].channelId === channel.id &&
+									this.displayMessages(messages)}
+							</Comment.Group>
+						}
+					</Segment>
+
+					<MessagesForm currentChannel={channel} messagesRef={messagesRef} />
+				</React.Fragment>
+			) : (
+				<Spinner title={'Preparing conversation...'} />
+			);
+		} else {
+			return (
+				<React.Fragment>
+					<MessagesHeader messages={messages} channel={channel} />
+
+					<Segment className='messages'>
+						{
+							<Comment.Group>
+								{messages.channelId === channel.id &&
+									this.displayMessages(messages)}
+							</Comment.Group>
+						}
+					</Segment>
+
+					<MessagesForm currentChannel={channel} messagesRef={messagesRef} />
+				</React.Fragment>
+			);
+		}
 	}
 }
 

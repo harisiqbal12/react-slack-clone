@@ -15,11 +15,11 @@ const useStyles = makeStyles(theme => ({
 		'& > * + *': {
 			marginTop: theme.spacing(2),
 		},
-		position: 'relative',
-		top: '10rem',
 	},
 	alert: {
-		backgroundColor: '#ff7096 !important',
+		backgroundColor: '#e07a5f !important',
+		width: '15rem',
+		fontSize: '10px',
 	},
 	alertSuccess: {
 		backgroundColor: '#2a9d8f !important',
@@ -42,7 +42,7 @@ export default function CustomizedSnackbars(props) {
 			<Snackbar
 				anchorOrigin={{ vertical: verticleOrigin, horizontal: horizonleOrigin }}
 				open={props.open}
-				autoHideDuration={1500}
+				autoHideDuration={2500}
 				onClose={props.handleClose}
 				className={
 					props.snackBarSeverity === 'success'

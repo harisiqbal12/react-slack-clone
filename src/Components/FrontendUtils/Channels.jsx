@@ -98,7 +98,7 @@ class Channels extends React.Component {
 			this.closeModal();
 			this.setState({
 				snackBarOpen: true,
-				message: [`${this.state.channelName} Created Successfully`],
+				message: [`Created Successfully`],
 				snackBarSeverity: 'success',
 				loading: false,
 			});
@@ -240,14 +240,12 @@ class Channels extends React.Component {
 
 					<Modal.Actions>
 						<Button
-							className={loading && 'loading'}
-							color='green'
-							inverted
+							className={(loading && 'loading', 'modal-send__button')}
 							disabled={loading}
 							onClick={this.handleSubmit}>
 							<Icon name='checkmark' /> Add
 						</Button>
-						<Button onClick={this.closeModal} color='red' inverted>
+						<Button className='modal-cancel__button' onClick={this.closeModal}>
 							<Icon name='remove' /> Cancel
 						</Button>
 					</Modal.Actions>
